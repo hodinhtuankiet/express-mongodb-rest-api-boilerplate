@@ -28,3 +28,8 @@ export const GET_DB = () =>{
     // if available
     return trelloDatabaseInstance;
 }
+
+export const CLOSE_DB =  async () =>{
+    console.log('code chay vao day');
+    await mongoClientInstance.close();
+}
