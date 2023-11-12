@@ -1,9 +1,12 @@
 import express from 'express';
+import { StatusCodes } from 'http-status-codes'
+import { boardRoutes } from '~/routes/v1/boardRoute'
 
-const router = express.Router();
+const Router = express.Router();
 
-router.get('/status',(req,res)=>{
-    res.status(200).json({ message: 'Already to use '})
+Router.get('/status',(req,res)=>{
+    res.status(StatusCodes.OK).json({ message: 'Already to use '})
 })
+Router.use('/boards', boardRoutes)
 
-export const APIs_v1 = router
+export const APIs_v1 = Router
