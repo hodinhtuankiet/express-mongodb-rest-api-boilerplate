@@ -7,13 +7,14 @@ import {APIs_v1} from '~/routes/v1'
 const START_SERVER = ()=>{
     const app = express()
 
+    app.use(express.json())
     app.use('/v1',APIs_v1)
     
     app.listen(env.APP_PORT, env.APP_HOST, () => {
       // eslint-disable-next-line no-console
       console.log(`Hello ${env.AUTHOR} Dev, I am running at ${ env.APP_HOST }:${ env.APP_PORT }/`)
     })
-
+    
     exitHook(()=>{
       console.log('4.Disconnecting Mongo');
       CLOSE_DB();
