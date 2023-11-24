@@ -17,7 +17,7 @@ const createNew = async (req , res , next ) => {
     console.log(req.body);
     // abortEarly: false -> See if validation stops early or not -> return multiple errors
     await correctCondition.validateAsync(req.body, { abortEarly: false})
-    res.status(StatusCodes.CREATED).json({message: 'POST from validation: API create new board'})
+    next()
     } catch (error) {
         console.log(error);
         res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
