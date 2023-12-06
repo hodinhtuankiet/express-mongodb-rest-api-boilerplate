@@ -13,7 +13,6 @@ const START_SERVER = ()=>{
     app.use('/v1',APIs_v1)
     //Middleware xử lí lỗi tập trung 
     app.use(errorHandlingMiddleware)
-
          
     app.listen(env.APP_PORT, env.APP_HOST, () => {
       // eslint-disable-next-line no-console
