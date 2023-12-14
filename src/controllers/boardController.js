@@ -7,6 +7,7 @@ const createNew = async (req , res , next ) => {
     // console.log(req.body);
 
     const createdBoard = await boardService.createNew(req.body);
+    // return json về Clients 
     res.status(StatusCodes.CREATED).json(createdBoard)
 
     } catch (error) {
