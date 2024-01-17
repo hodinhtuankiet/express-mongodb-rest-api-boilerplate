@@ -1,15 +1,19 @@
-import express from 'express';
-import { StatusCodes } from 'http-status-codes';
-import { boardValidation } from '~/validations/boardValidation';
-import { boardController } from '~/controllers/boardController';
+import express from 'express'
+import { StatusCodes } from 'http-status-codes'
+import { boardValidation } from '~/validations/boardValidation'
+import { boardController } from '~/controllers/boardController'
 
-const Router = express.Router();
+const Router = express.Router()
 
 Router.route('/')
-    .get((req,res)=>{
-        res.status(StatusCodes.OK).json({ message: 'Already get list board '})
-    })
-    // next() -|> when boardValidation finishes , we will redirect to boardController
-    .post(boardValidation.createNew,boardController.createNew)
+  .get((req, res) => {
+    res.status(StatusCodes.OK).json({ message: 'Already get list board ' })
+  })
+// next() -> when boardValidation finished , we will redirect to boardController
+  .post(boardValidation.createNew, boardController.createNew)
+
+Router.route('/:id')
+  .get(boardController.getDetails)
+  .put()
 
 export const boardRoute = Router
