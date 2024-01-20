@@ -18,17 +18,19 @@ const createNew = async (req, res, next ) => {
     next(error)
   }
 }
-const getDetails = async (req, res, next ) => {
+const getDetails = async (req, res, next) => {
   try {
-    const boardId = req.body.id
-    const Board = await boardService.createNew(boardId)
+    const boardId = req.params.id
+    const Board = await boardService.getDetails(boardId)
     // return json về Clients
     res.status(StatusCodes.OK).json(Board)
-
   } catch (error) {
+    console.error('Error in getDetails middleware:', error.message)
+    console.error(error.stack) // Log the stack trace for more details
     next(error)
   }
 }
+
 export const boardController = {
   createNew, getDetails
 }

@@ -29,8 +29,8 @@ const createNew = async (reqBody) => {
 const getDetails = async (boardId) => {
   try {
     const board = await boardModel.getDetails(boardId)
-    if(!board) {
-      throw new ApiError(StatusCodes.NOT_FOUND)
+    if (!board) {
+      throw new ApiError(StatusCodes.NOT_FOUND, '')
     }
     return board
   } catch (error) {
