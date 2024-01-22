@@ -2,6 +2,9 @@ import Joi from 'joi'
 import { ObjectId } from 'mongodb'
 import { GET_DB } from '~/config/mongodb'
 import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validator'
+import { BOARDS_TYPES } from '~/utils/constants'
+import { columnModel } from './columnModel'
+import { cardModel } from './cardModel'
 // define collection
 const BOARD_COLLECTION_NAME = 'boards'
 const BOARD_COLLECTION_SCHEMA = Joi.object({
@@ -16,6 +19,8 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
   }),
   description: Joi.string().required().min(3).max(50).trim().strict(),
   slug: Joi.string().required().min(3).trim().strict(),
+  type: Joi.string().valid(BOARDS_TYPES.PUBLIC, BOARDS_TYPES.PRIVATE).required(),
+
   // array contain ids of columns for board
   columOrderIds: Joi.array().items(
     Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
@@ -27,11 +32,15 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
   _destroy: Joi.boolean().default(false)
 })
 
+const validateBeforeCreate = async (data) => {
+  return await BOARD_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: true })
+}
 
 const createdNew = async (data) => {
   try {
     // const createdBoard = await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(data)
-    return await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(data)
+    const validData = await validateBeforeCreate(data)
+    return await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(validData)
     // return về service
   } catch (error) { throw new Error(error) }
 }
@@ -45,10 +54,37 @@ const fineOneById = async (id) => {
 }
 const getDetails = async (id) => {
   try {
-    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOne({
-      _id : new ObjectId(id)
-    })
-    return result
+    // const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOne({ _id : new ObjectId(id) })
+
+    // aggregate nhận vào một mảng , query tổng hợp (nhiều điều kiện)
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).aggregate([
+      { $match:{
+        // tìm một bảng ghi với id này , điều kiện destroy là false
+        _id : new ObjectId(id),
+        _destroy : false
+      } },
+      { $lookup: {
+        from: columnModel.COLUMN_COLLECTION_NAME,
+        // collection hiện tại của chúng ta
+        localField: '_id',
+        // khóa ngoại
+        foreignField: 'boardId',
+        // collection board chạy sang column để tìm boardId = _id của board
+        as: 'columns'
+      } },
+      { $lookup: {
+        from: cardModel.CARD_COLLECTION_NAME,
+        // collection hiện tại của chúng ta
+        localField: '_id',
+        // khóa ngoại
+        foreignField: 'boardId',
+        // collection column chạy sang cards để tìm boardId = _id của column
+        as: 'cards'
+      } }
+    ]).toArray()
+    console.log(result)
+    // nếu có dữ liệu thì lấy phần tử đầu
+    return result[0] || {}
   } catch (error) {
     // throw new Error(error)
   }

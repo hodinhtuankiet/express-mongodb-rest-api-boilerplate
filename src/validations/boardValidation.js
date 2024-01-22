@@ -1,7 +1,7 @@
 import Joi from 'joi'
 import { StatusCodes } from 'http-status-codes'
 import ApiError from '~/utils/ApiError'
-
+import { BOARDS_TYPES } from '~/utils/constants'
 const createNew = async (req, res, next ) => {
   const correctCondition = Joi.object({
     // CUSTOME MESSAGES
@@ -12,7 +12,9 @@ const createNew = async (req, res, next ) => {
       'string.max' : 'Title max 50 chars',
       'string.trim' : 'Title must not have leading or trailing spaces'
     }),
-    description: Joi.string().required().min(3).max(50).trim().strict()
+    description: Joi.string().required().min(3).max(50).trim().strict(),
+    // kiểu dữ liệu chỉ muốn public và private -> khác thì lỗi lun
+    type: Joi.string().valid(BOARDS_TYPES.PUBLIC, BOARDS_TYPES.PRIVATE).required()
   })
   try {
     // containing information submitted by a client

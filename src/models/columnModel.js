@@ -4,7 +4,7 @@ import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validator'
 // Define Collection (name & schema)
 const COLUMN_COLLECTION_NAME = 'columns'
 const COLUMN_COLLECTION_SCHEMA = Joi.object({
-    // ObjectId("507f191e810c19729de860ea").toString()
+  // ObjectId("507f191e810c19729de860ea").toString()
   boardId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
   title: Joi.string().required().min(3).max(50).trim().strict(),
 
