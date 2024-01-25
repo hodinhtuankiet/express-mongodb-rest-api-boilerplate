@@ -5,11 +5,11 @@ import { GET_DB, CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
 import { APIs_v1 } from '~/routes/v1'
 import { errorHandlingMiddleware } from '~/middlewares/errorHandlingMiddleware'
 import cors from 'cors'
-
+import { corsOptions } from './config/cors'
 const START_SERVER = () => {
   const app = express()
   // enable req.body json data
-  app.use(cors())
+  app.use(cors(corsOptions))
 
   app.use(express.json())
 

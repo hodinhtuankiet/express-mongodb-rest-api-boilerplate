@@ -2,7 +2,7 @@ import ApiError from '~/utils/ApiError'
 import { slugify } from '~/utils/formatter'
 import { boardModel } from '~/models/boardModel'
 import { StatusCodes } from 'http-status-codes'
-
+import { cloneDeep } from 'lodash'
 const createNew = async (reqBody) => {
   try {
     // xử lí logic dữ liệu
@@ -32,7 +32,21 @@ const getDetails = async (boardId) => {
     if (!board) {
       throw new ApiError(StatusCodes.NOT_FOUND, '')
     }
-    return board
+    // cloneDeep create new data board(resBoard) to avoid alter data
+    const resBoard = cloneDeep(board)
+    resBoard.columns.forEach(column => {
+      // Here data cards located on the same level as the column
+      // column.cards to create new data cards after filter
+      // filter response new array cards with(c.columnId === column._id) -> then create array cards
+      // Must use toString() Cuz columnId & column._id is ObjectId()
+      column.cards = resBoard.cards.filter(card => card.columnId.toString() === column._id.toString())
+      // OR
+      // column.cards = resBoard.cards.filter(card => card.columnId.equals(column._id))
+    })
+    // After create new array cards located in columns array
+    // Then delete array cards has same level clumns array in resboard
+    delete resBoard.cards
+    return resBoard
   } catch (error) {
     console.error('Error in createNew function:', error.message)
     throw new ApiError('Error creating new board', 500) // Ví dụ: Throw một ApiError với mã lỗi 500

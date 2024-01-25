@@ -22,7 +22,7 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
   type: Joi.string().valid(BOARDS_TYPES.PUBLIC, BOARDS_TYPES.PRIVATE).required(),
 
   // array contain ids of columns for board
-  columOrderIds: Joi.array().items(
+  columnOrderIds: Joi.array().items(
     Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
   ).default([]),
 
@@ -70,6 +70,7 @@ const getDetails = async (id) => {
         // khóa ngoại
         foreignField: 'boardId',
         // collection board chạy sang column để tìm boardId = _id của board
+        // cái as này không fix mà do chúng ta cố định
         as: 'columns'
       } },
       { $lookup: {
@@ -79,12 +80,13 @@ const getDetails = async (id) => {
         // khóa ngoại
         foreignField: 'boardId',
         // collection column chạy sang cards để tìm boardId = _id của column
+        // cái as này không fix mà do chúng ta cố định
         as: 'cards'
       } }
     ]).toArray()
     console.log(result)
     // nếu có dữ liệu thì lấy phần tử đầu
-    return result[0] || {}
+    return result[0] || null
   } catch (error) {
     // throw new Error(error)
   }
@@ -97,3 +99,5 @@ export const boardModel = {
   fineOneById,
   getDetails
 }
+// boardId: 65ae8fbec29895ce9f74c31d
+// cardId: 65b24a45af7b02b6321e1439
