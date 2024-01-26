@@ -83,6 +83,7 @@ const getDetails = async (id) => {
         // cái as này không fix mà do chúng ta cố định
         as: 'cards'
       } }
+      // Must toArray
     ]).toArray()
     console.log(result)
     // nếu có dữ liệu thì lấy phần tử đầu
@@ -91,13 +92,34 @@ const getDetails = async (id) => {
     // throw new Error(error)
   }
 }
+const pushColumnOrderIds = async (column) => {
+  try {
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
+      // Find the board containing this column
+      { _id: new ObjectId(column.boardId) },
+      // Push the ID of this column into columnOrderIds of the board
+      { $push: { columnOrderIds: new ObjectId(column._id) } },
+      // Use returnDocument('after') to return the updated board after the push
+      // Use returnDocument('before') to return the original board
+      { returnDocument: 'after' }
+    )
+
+    // findOneAndUpdate must return result.value
+    return result.value
+  } catch (error) {
+    // Provide a more specific error message
+    console.error('Error pushing ColumnOrderIds:', error.message)
+    throw new Error('Error pushing ColumnOrderIds', 500)
+  }
+}
 
 export const boardModel = {
   BOARD_COLLECTION_NAME,
   BOARD_COLLECTION_SCHEMA,
   createdNew,
   fineOneById,
-  getDetails
+  getDetails,
+  pushColumnOrderIds
 }
 // boardId: 65ae8fbec29895ce9f74c31d
 // cardId: 65b24a45af7b02b6321e1439

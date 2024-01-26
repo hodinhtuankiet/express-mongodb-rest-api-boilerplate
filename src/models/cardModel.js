@@ -24,7 +24,12 @@ const createdNew = async (data) => {
   try {
     // const createdBoard = await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(data)
     const validData = await validateBeforeCreate(data)
-    return await GET_DB().collection(CARD_COLLECTION_NAME).insertOne(validData)
+    const newCardToAdd = {
+      ...validData,
+      boardId: new ObjectId(validData.boardId),
+      columnId: new ObjectId(validData.columnId)
+    }
+    return await GET_DB().collection(CARD_COLLECTION_NAME).insertOne(newCardToAdd)
     // return về service
   } catch (error) { throw new Error(error) }
 }
@@ -36,6 +41,7 @@ const fineOneById = async (id) => {
     return result
   } catch (error) { throw new Error(error) }
 }
+
 export const cardModel = {
   CARD_COLLECTION_NAME,
   CARD_COLLECTION_SCHEMA,

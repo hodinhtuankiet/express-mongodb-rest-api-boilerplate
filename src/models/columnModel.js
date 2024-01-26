@@ -25,7 +25,13 @@ const createdNew = async (data) => {
   try {
     // const createdBoard = await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(data)
     const validData = await validateBeforeCreate(data)
-    return await GET_DB().collection(COLUMN_COLLECTION_NAME).insertOne(validData)
+    // Convert string of boardId to ObjectId
+    const newColumnToAdd = {
+      ...validData,
+      boardId: new ObjectId(validData.boardId)
+    }
+    // If do not collection in database -> Collection Column will be generated
+    return await GET_DB().collection(COLUMN_COLLECTION_NAME).insertOne(newColumnToAdd)
     // return về service
   } catch (error) { throw new Error(error) }
 }
@@ -37,10 +43,30 @@ const fineOneById = async (id) => {
     return result
   } catch (error) { throw new Error(error) }
 }
+const pushCardOrderIds = async (card) => {
+  try {
+    const result = await GET_DB().collection(COLUMN_COLLECTION_NAME).findOneAndUpdate(
+      // Find the board containing this column
+      { _id: new ObjectId(card.columnId) },
+      // Push the ID of this column into columnOrderIds of the board
+      { $push: { cardOrderIds: new ObjectId(card._id) } },
+      // Use returnDocument('after') to return the updated board after the push
+      // Use returnDocument('before') to return the original board
+      { returnDocument: 'after' }
+    )
 
+    // findOneAndUpdate must return result.value
+    return result.value
+  } catch (error) {
+    // Provide a more specific error message
+    console.error('Error pushing cardOrderIds:', error.message)
+    throw new Error('Error pushing cardOrderIds', 500)
+  }
+}
 export const columnModel = {
   COLUMN_COLLECTION_NAME,
   COLUMN_COLLECTION_SCHEMA,
   createdNew,
-  fineOneById
+  fineOneById,
+  pushCardOrderIds
 }
