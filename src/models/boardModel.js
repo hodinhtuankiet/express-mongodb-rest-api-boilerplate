@@ -103,7 +103,6 @@ const pushColumnOrderIds = async (column) => {
       // Use returnDocument('before') to return the original board
       { returnDocument: 'after' }
     )
-
     // findOneAndUpdate must return result.value
     return result.value
   } catch (error) {

@@ -9,8 +9,9 @@ const createNew = async (req, res, next ) => {
     boardId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
     columnId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
     // kiểu dữ liệu chỉ muốn public và private -> khác thì lỗi lun
-    title: Joi.string().required().min(3).max(50).trim().strict(),
-    description: Joi.string().min(3).max(50).trim().strict()
+    title: Joi.string().required().min(2).max(50).strict(),
+    // Allow an empty string for description
+    description: Joi.string().allow('').min(0).max(50).trim()
   })
   try {
     // abortEarly: false -> the validation process will collect all validation errors in the data, instead of stopping at the first encountered error
