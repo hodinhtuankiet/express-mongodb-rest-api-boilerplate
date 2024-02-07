@@ -12,6 +12,7 @@ const createNew = async (req, res, next ) => {
     title: Joi.string().required().min(2).max(50).strict(),
     // Allow an empty string for description
     description: Joi.string().allow('').min(0).max(50).trim(),
+    // images: Joi.string().allow('').min(0).max(50).trim()
     images: Joi.array().items(Joi.string()).allow().optional()
   })
   try {

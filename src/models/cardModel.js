@@ -12,6 +12,7 @@ const CARD_COLLECTION_SCHEMA = Joi.object({
   title: Joi.string().required().min(2).max(50).trim().strict(),
   // có or ko !
   description: Joi.string().allow('').optional(),
+  // images: Joi.string().allow('').optional(),
   images: Joi.array().items(Joi.string()).allow().optional(),
 
   createdAt: Joi.date().timestamp('javascript').default(Date.now),
@@ -28,7 +29,8 @@ const createdNew = async (data) => {
       ...validData,
       boardId: new ObjectId(validData.boardId),
       columnId: new ObjectId(validData.columnId),
-      images: validData.images.map((base64Image) => Buffer.from(base64Image, 'base64'))
+      // images: validData.images.map((base64Image) => Buffer.from(base64Image, 'base64'))
+      images: validData.images
     }
 
     const result = await GET_DB().collection(CARD_COLLECTION_NAME).insertOne(newCardToAdd)
