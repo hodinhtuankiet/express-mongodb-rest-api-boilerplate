@@ -12,6 +12,7 @@ const CARD_COLLECTION_SCHEMA = Joi.object({
   title: Joi.string().required().min(2).max(50).trim().strict(),
   // có or ko !
   description: Joi.string().allow('').optional(),
+  images: Joi.array().items(Joi.string()).allow().optional(),
 
   createdAt: Joi.date().timestamp('javascript').default(Date.now),
   updatedAt: Joi.date().timestamp('javascript').default(null),
@@ -22,29 +23,61 @@ const validateBeforeCreate = async (data) => {
 }
 const createdNew = async (data) => {
   try {
-    // const createdBoard = await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(data)
     const validData = await validateBeforeCreate(data)
     const newCardToAdd = {
       ...validData,
       boardId: new ObjectId(validData.boardId),
-      columnId: new ObjectId(validData.columnId)
+      columnId: new ObjectId(validData.columnId),
+      images: validData.images.map((base64Image) => Buffer.from(base64Image, 'base64'))
     }
-    return await GET_DB().collection(CARD_COLLECTION_NAME).insertOne(newCardToAdd)
-    // return về service
-  } catch (error) { throw new Error(error) }
+
+    const result = await GET_DB().collection(CARD_COLLECTION_NAME).insertOne(newCardToAdd)
+
+    // Check if the insertion was successful
+    if (result && result.insertedId) {
+      const createdCard = await GET_DB().collection(CARD_COLLECTION_NAME).findOne({ _id: result.insertedId })
+      return createdCard
+    } else {
+      throw new Error('Failed to insert the new card')
+    }
+  } catch (error) {
+    throw new Error(error)
+  }
 }
+
+
 const fineOneById = async (id) => {
   try {
     const result = await GET_DB().collection(CARD_COLLECTION_NAME).findOne({
-      _id : new ObjectId(id)
+      _id: new ObjectId(id)
     })
-    return result
-  } catch (error) { throw new Error(error) }
+    // Check if the document was found
+    if (result) {
+      return result
+    } else {
+      throw new Error('No card found with the specified ID')
+    }
+  } catch (error) {
+    throw new Error(error)
+  }
 }
 
+// delete all cards by columnId
+const deleteAllCardById = async (columnId) => {
+  try {
+    const result = await GET_DB().collection(CARD_COLLECTION_NAME).deleteMany({
+      columnId : new ObjectId(columnId)
+    })
+    console.log('result delete in card model', result)
+    return result
+  } catch (error) {
+    console.error('Error deleting column:', error)
+    throw new Error(error) }
+}
 export const cardModel = {
   CARD_COLLECTION_NAME,
   CARD_COLLECTION_SCHEMA,
   createdNew,
-  fineOneById
+  fineOneById,
+  deleteAllCardById
 }

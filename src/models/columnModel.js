@@ -63,10 +63,21 @@ const pushCardOrderIds = async (card) => {
     throw new Error('Error pushing cardOrderIds', 500)
   }
 }
+const deleteColumnById = async (columnId) => {
+  try {
+    const result = await GET_DB().collection(COLUMN_COLLECTION_NAME).deleteOne({
+      _id : new ObjectId(columnId)
+    })
+    console.log('Result delete in column model', result)
+    return result
+  } catch (error) { console.error('Error deleting column:', error)
+    throw new Error(error) }
+}
 export const columnModel = {
   COLUMN_COLLECTION_NAME,
   COLUMN_COLLECTION_SCHEMA,
   createdNew,
   fineOneById,
-  pushCardOrderIds
+  pushCardOrderIds,
+  deleteColumnById
 }

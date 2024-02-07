@@ -1,26 +1,39 @@
 import ApiError from '~/utils/ApiError'
 import { cardModel } from '~/models/cardModel'
 import { columnModel } from '~/models/columnModel'
+
 const createNew = async (reqBody) => {
   try {
-    // xử lí logic dữ liệu
+    const { images, ...otherFields } = reqBody
+
+    const imageBuffers = Array.isArray(images)
+      ? images.map((base64Image) => Buffer.from(base64Image, 'base64'))
+      : []
+
     const newCard = {
-      ...reqBody
+      ...otherFields,
+      images: imageBuffers
     }
-    // gọi tới tầng model để lưu vào database
+
     const createdCard = await cardModel.createdNew(newCard)
-    // phải có return để bay vào tầng controller
-    // createdCard.insertedI : ObjectId
-    const getNewCard = await cardModel.fineOneById(createdCard.insertedId)
-    if (getNewCard) {
-      // handle after created new column -> cards with [empty]
-      await columnModel.pushCardOrderIds(getNewCard)
-    }
-    return getNewCard
+
+    const getNewCard = await cardModel.fineOneById(createdCard.insertedId.toString())
+
+    // if (!getNewCard) {
+    //   throw new Error('No card found with the specified ID')
+    // }
+
+    // await columnModel.pushCardOrderIds(getNewCard)
+
+    return createdCard
   } catch (error) {
-    // Thêm xử lý lỗi cụ thể nếu cần
     console.error('Error in createNew function:', error.message)
-    throw new ApiError('Error creating new card', 500) // Ví dụ: Throw một ApiError với mã lỗi 500
+    console.error('Error details:', {
+      request_body: reqBody,
+      error_message: error.message,
+      stack_trace: error.stack
+    });
+    throw new ApiError('Error creating new card at service ${error.message}', 500)
   }
 }
 

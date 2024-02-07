@@ -19,6 +19,20 @@ const createNew = async (req, res, next ) => {
     next(new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error.message)))
   }
 }
+const deleteColumn = async (req, res, next ) => {
+  const correctCondition = Joi.object({
+    id: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
+  })
+  try {
+    // abortEarly: false -> the validation process will collect all validation errors in the data, instead of stopping at the first encountered error
+    await correctCondition.validateAsync(req.params)
+    // next to Controller
+    next()
+  } catch (error) {
+    next(new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error.message)))
+  }
+}
 export const columnValidation = {
-  createNew
+  createNew,
+  deleteColumn
 }

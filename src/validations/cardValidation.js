@@ -11,7 +11,8 @@ const createNew = async (req, res, next ) => {
     // kiểu dữ liệu chỉ muốn public và private -> khác thì lỗi lun
     title: Joi.string().required().min(2).max(50).strict(),
     // Allow an empty string for description
-    description: Joi.string().allow('').min(0).max(50).trim()
+    description: Joi.string().allow('').min(0).max(50).trim(),
+    images: Joi.array().items(Joi.string()).allow().optional()
   })
   try {
     // abortEarly: false -> the validation process will collect all validation errors in the data, instead of stopping at the first encountered error
