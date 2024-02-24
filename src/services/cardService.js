@@ -5,6 +5,8 @@ import { columnModel } from '~/models/columnModel'
 const createNew = async (reqBody) => {
   try {
     const { images, ...otherFields } = reqBody
+    console.log('Images received:', images)
+    console.log('otherFields received:', { ...otherFields })
 
     const imageBuffers = Array.isArray(images)
       ? images.map((base64Image) => Buffer.from(base64Image, 'base64'))

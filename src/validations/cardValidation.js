@@ -13,7 +13,7 @@ const createNew = async (req, res, next ) => {
     // Allow an empty string for description
     description: Joi.string().allow('').min(0).max(50).trim(),
     // images: Joi.string().allow('').min(0).max(50).trim()
-    images: Joi.array().items(Joi.string()).allow().optional()
+    images: Joi.array().items(Joi.string()).default([])
   })
   try {
     // abortEarly: false -> the validation process will collect all validation errors in the data, instead of stopping at the first encountered error
