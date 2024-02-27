@@ -4,28 +4,23 @@ import { columnModel } from '~/models/columnModel'
 
 const createNew = async (reqBody) => {
   try {
-    const { images, ...otherFields } = reqBody
-    console.log('Images received:', images)
-    console.log('otherFields received:', { ...otherFields })
-
-    const imageBuffers = Array.isArray(images)
-      ? images.map((base64Image) => Buffer.from(base64Image, 'base64'))
-      : []
+    const { ...otherFields } = reqBody
 
     const newCard = {
-      ...otherFields,
-      images: imageBuffers
+      ...otherFields
     }
+
     const createdCard = await cardModel.createdNew(newCard)
 
     if (!createdCard._id) {
       throw new Error('Error creating new card: No valid ID returned')
     }
-    // phải có return để bay vào tầng controller
-    // createdCard.insertedI : ObjectId
+
+    // Retrieve the newly created card by its ID
     const getNewCard = await cardModel.fineOneById(createdCard._id)
+
     if (getNewCard) {
-      // handle after created new column -> cards with [empty]
+      // Handle after creating a new card -> update column order IDs
       await columnModel.pushCardOrderIds(getNewCard)
     }
 
@@ -37,7 +32,7 @@ const createNew = async (reqBody) => {
       error_message: error.message,
       stack_trace: error.stack
     })
-    throw new ApiError('Error creating new card at service ', 500)
+    throw new ApiError('Error creating new card at service', 500)
   }
 }
 

@@ -13,7 +13,7 @@ const CARD_COLLECTION_SCHEMA = Joi.object({
   // có or ko !
   description: Joi.string().allow('').optional(),
   // images: Joi.string().allow('').optional(),
-  images: Joi.array().items(Joi.string()).allow().optional(),
+  images: Joi.string().allow('').optional(),
 
   createdAt: Joi.date().timestamp('javascript').default(Date.now),
   updatedAt: Joi.date().timestamp('javascript').default(null),
