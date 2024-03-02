@@ -5,7 +5,7 @@
   "author": "Tuankietdev - Một Lập Trình Viên",
   "description": "https://youtube.com/@tuankietdev",
   "engines": {
-    "node": "20.10.0"
+    "node": "20.11.1"
   },
   "scripts": {
     "lint": "eslint src --ext js --report-unused-disable-directives --max-warnings 0",

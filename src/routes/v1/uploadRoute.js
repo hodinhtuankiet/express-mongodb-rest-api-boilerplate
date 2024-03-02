@@ -1,6 +1,6 @@
 import express from 'express'
-import { cardValidation } from '~/validations/cardValidation'
-import { cardController } from '~/controllers/cardController'
+import { imageValidation } from '~/validations/imageValidation'
+import { imageController } from '~/controllers/imageController'
 // import multer from 'multer'
 const multer = require('multer')
 const Router = express.Router()
@@ -26,5 +26,5 @@ Router.route('/')
       console.error('Error uploading image:', error)
       res.status(500).send('Internal Server Error')
     }
-  }, cardValidation.createNew, cardController.createNew)
-export const cardRoute = Router
+  }, imageValidation.createNew, imageController.createNew)
+export const uploadRoute = Router
