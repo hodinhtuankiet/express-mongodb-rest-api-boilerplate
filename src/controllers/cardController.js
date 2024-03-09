@@ -21,8 +21,18 @@ const readDetail = async (cardId) => {
     throw new Error(error.message) // Re-throw the error with a more descriptive message
   }
 }
+const findByIdAndUpdate = async (cardId, updateData) => {
+  try {
+    const updatedCard = await cardModel.updateCard(cardId, updateData)
+    // You might want to process or manipulate the data here before returning it
+    return updatedCard
+  } catch (error) {
+    console.error('Error updating card data in findByIdAndUpdate:', error)
+    throw new Error(error.message) // Re-throw the error with a more descriptive message
+  }
+}
 
 
 export const cardController = {
-  createNew, readDetail
+  createNew, readDetail, findByIdAndUpdate
 }

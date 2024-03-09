@@ -76,10 +76,25 @@ const deleteAllCardById = async (columnId) => {
     console.error('Error deleting column:', error)
     throw new Error(error) }
 }
+const updateCard = async (id, updateData) => {
+  try {
+    const result = await GET_DB().collection(CARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: updateData },
+      { returnDocument: 'after', useFindAndModify: false }
+    )
+    console.log('result update in card model', result)
+    return result.value
+  } catch (error) {
+    console.error('Error updating card:', error)
+    throw new Error(error)
+  }
+}
 export const cardModel = {
   CARD_COLLECTION_NAME,
   CARD_COLLECTION_SCHEMA,
   createdNew,
   fineOneById,
-  deleteAllCardById
+  deleteAllCardById,
+  updateCard
 }
