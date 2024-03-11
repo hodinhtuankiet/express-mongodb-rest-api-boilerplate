@@ -25,6 +25,9 @@ const findByIdAndUpdate = async (cardId, updateData) => {
   try {
     const updatedCard = await cardModel.updateCard(cardId, updateData)
     // You might want to process or manipulate the data here before returning it
+    if (!updatedCard) {
+      throw new Error('Card not found at CardController')
+    }
     return updatedCard
   } catch (error) {
     console.error('Error updating card data in findByIdAndUpdate:', error)

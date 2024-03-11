@@ -39,12 +39,12 @@ Router.route('/:id')
     }
   })
 Router.route('/edit/:id')
-  .post(async (req, res) => {
+  .put(async (req, res) => {
     const cardId = req.params.id
     try {
       const updatedCard = await cardController.findByIdAndUpdate(cardId, req.body)
       res.status(200).send('Card updated successfully')
-      res.json(updatedCard) // Assuming you want to send the updated card data as a JSON response to the client
+      res.status(200).json(updatedCard) // Assuming you want to send the updated card data as a JSON response to the client
     } catch (error) {
       console.error('Error updating card data:', error)
       res.status(500).send('Internal Server Error')

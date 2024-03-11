@@ -18,5 +18,5 @@ Router.use('/columns', columnRoute)
 // BOARD API
 Router.use('/cards', cardRoute)
 /** Upload APIs */
-Router.use('/upload', uploadRoute)
+Router.use('/profile', uploadRoute)
 export const APIs_v1 = Router
