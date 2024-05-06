@@ -1,5 +1,10 @@
 Link Frontend: https://github.com/hodinhtuankiet/trello-client
-```
+
+## Backend Code Flow
+![Screenshot 2024-05-06 204009](https://github.com/hodinhtuankiet/trello-backend-express/assets/120298180/b103202f-00f2-4c0e-93a4-3d1a49fa355a)
+
+Semantic Versioning
+``` 
 * nodejs = v18.16.0
 * npm = v9.8.1
 * yarn = v1.22.19
